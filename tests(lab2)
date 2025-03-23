@@ -1,0 +1,23 @@
+import unittest
+from task import min_eating_speed 
+class TestMinEatingSpeed(unittest.TestCase):
+    def test_example1(self):
+        piles = [3, 6, 7, 11]
+        H = 8
+        expected = 4
+        self.assertEqual(min_eating_speed(piles, H), expected)
+
+    def test_example2(self):
+        piles = [30, 11, 23, 4, 20]
+        H = 5
+        expected = 30
+        self.assertEqual(min_eating_speed(piles, H), expected)
+
+    def test_example3(self):
+        piles = [30, 11, 23, 4, 20]
+        H = 6
+        expected = 23
+        self.assertEqual(min_eating_speed(piles, H), expected)
+
+if __name__ == '__main__':
+    unittest.main()

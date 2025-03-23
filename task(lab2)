@@ -1,0 +1,50 @@
+def min_eating_speed(piles, H):
+    if not (1 <= len(piles) <= 10**4):
+        raise ValueError(f"Помилка: довжина piles має бути від 1 до 10^4, отримано {len(piles)}")
+    
+    if not (len(piles) <= H <= 10**9):
+        raise ValueError(f"Помилка: H має бути від {len(piles)} до 10^9, отримано {H}")
+    
+    for bananas in piles:
+        if not (1 <= bananas <= 10**9):
+            raise ValueError(f"Помилка: значення piles[i] має бути від 1 до 10^9, отримано {bananas}")
+    
+    def hours_needed(piles, k):
+        total_hours = 0
+        for bananas in piles:
+            hours = bananas // k
+            if bananas % k != 0:
+                hours += 1
+            total_hours += hours
+        return total_hours
+
+    left = 1
+    right = max(piles)  
+
+    result = right  
+
+    while left <= right:
+        mid = (left + right) // 2
+        needed_hours = hours_needed(piles, mid)
+
+        if needed_hours <= H:
+            result = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    return result
+
+
+if __name__ == '__main__':
+    piles1 = [3, 6, 7, 11]
+    H1 = 4
+    print(min_eating_speed(piles1, H1)) 
+
+    piles2 = [30, 11, 23, 4, 20]
+    H2 = 5
+    print(min_eating_speed(piles2, H2))  
+
+    piles3 = [30, 11, 23, 4, 20]
+    H3 = 6
+    print(min_eating_speed(piles3, H3))  

@@ -1,0 +1,52 @@
+import unittest
+from task import BinaryTree, invert_binary_tree
+
+class TestInvertBinaryTree(unittest.TestCase):
+    
+    def trees_are_equal(self, tree1, tree2):
+        """Допоміжна функція для перевірки, чи однакові дерева."""
+        if tree1 is None and tree2 is None:
+            return True
+        if tree1 is None or tree2 is None:
+            return False
+        if tree1.value != tree2.value:
+            return False
+        
+        return self.trees_are_equal(tree1.left, tree2.left) and \
+               self.trees_are_equal(tree1.right, tree2.right)
+
+    def test_invert_tree(self):
+        root = BinaryTree(1)
+        root.left = BinaryTree(2)
+        root.right = BinaryTree(3)
+        root.left.left = BinaryTree(4)
+        root.left.right = BinaryTree(5)
+        root.right.left = BinaryTree(6)
+        root.right.right = BinaryTree(7)
+
+        expected = BinaryTree(1)
+        expected.left = BinaryTree(3)
+        expected.right = BinaryTree(2)
+        expected.left.left = BinaryTree(7)
+        expected.left.right = BinaryTree(6)
+        expected.right.left = BinaryTree(5)
+        expected.right.right = BinaryTree(4)
+
+        inverted_tree = invert_binary_tree(root)
+
+        self.assertTrue(self.trees_are_equal(inverted_tree, expected), "Дерева не збігаються після інверсії.")
+
+    def test_invert_empty_tree(self):
+        root = None
+        inverted_tree = invert_binary_tree(root)
+        self.assertIsNone(inverted_tree, "Порожнє дерево повинно залишатися None.")
+
+    def test_invert_single_node(self):
+        root = BinaryTree(10)
+        inverted_tree = invert_binary_tree(root)
+        self.assertEqual(inverted_tree.value, 10, "Значення кореневого вузла має бути 10.")
+        self.assertIsNone(inverted_tree.left, "Лівий дочірній вузол має бути None.")
+        self.assertIsNone(inverted_tree.right, "Правий дочірній вузол має бути None.")
+
+if __name__ == '__main__':
+    unittest.main()

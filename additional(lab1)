@@ -1,0 +1,50 @@
+def find_mth_smallest(arr, m):
+    arr_copy = arr[:]
+    
+    for _ in range(m):
+        min_value = arr_copy[0]
+        min_index = 0
+        
+        for i in range(1, len(arr_copy)):
+            if arr_copy[i] is not None and arr_copy[i] < min_value:
+                min_value = arr_copy[i]
+                min_index = i
+        
+        arr_copy[min_index] = None
+    
+    mth_smallest_index = arr.index(min_value)
+    return min_value, mth_smallest_index
+
+def find_kth_largest(arr, k):
+    arr_copy = arr[:]
+    
+    for _ in range(k):
+        max_value = arr_copy[0]
+        max_index = 0
+        
+        for i in range(1, len(arr_copy)):
+            if arr_copy[i] is not None and arr_copy[i] > max_value:
+                max_value = arr_copy[i]
+                max_index = i
+        
+        arr_copy[max_index] = None
+    
+    kth_largest_index = arr.index(max_value)
+    return max_value, kth_largest_index
+
+
+if __name__ == "__main__":
+    arr = [15, 7, 22, 9, 36, 2, 42, 18]
+    
+    mid = len(arr) // 2
+    
+    left_part = arr[:mid]  
+    right_part = arr[mid:]  
+    
+    m = 2 
+    min_value, min_index = find_mth_smallest(left_part, m)
+    print(f"Найменший елемент лівої частини: {min_value}, індекс: {min_index}")
+    
+    k = 1 
+    max_value, max_index = find_kth_largest(right_part, k)
+    print(f"Найбільший елемент правої частини: {max_value}, індекс: {max_index}")

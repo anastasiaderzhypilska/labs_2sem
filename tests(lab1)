@@ -1,0 +1,29 @@
+import unittest
+from task import find_kth_largest  
+
+class TestFindKthLargest(unittest.TestCase):
+    def test_case1(self):
+        arr = [15, 7, 22, 9, 36, 2, 42, 18]
+        k = 3
+        result = find_kth_largest(arr, k)
+        self.assertEqual(result, (22, 2))
+
+    def test_case2(self):
+        arr = [5, 8, 12, 3, 7]
+        k = 2
+        result = find_kth_largest(arr, k)
+        self.assertEqual(result, (8, 1))
+
+    def test_case3(self):
+        arr = [10, 20, 30, 40]
+        k = 4
+        result = find_kth_largest(arr, k)
+        self.assertEqual(result, (10, 0))
+
+    def test_invalid_k(self):
+        arr = [1, 2, 3]
+        with self.assertRaises(ValueError):
+            find_kth_largest(arr, 4)
+
+if __name__ == "__main__":
+    unittest.main()

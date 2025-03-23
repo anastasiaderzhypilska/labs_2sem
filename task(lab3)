@@ -1,0 +1,70 @@
+class BinaryTree:
+    def __init__(self, value: int):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def invert_binary_tree(tree) -> BinaryTree:
+    if tree is None:
+        return None
+
+    tree.left, tree.right = tree.right, tree.left
+
+    invert_binary_tree(tree.left)
+    invert_binary_tree(tree.right)
+
+    return tree
+
+def get_tree_depth(node):
+    """Глибина дерева"""
+    if not node:
+        return 0
+    return 1 + max(get_tree_depth(node.left), get_tree_depth(node.right))
+
+def print_tree_horizontal(root):
+    """Виводить дерево горизонтально по рівнях"""
+    from collections import deque
+
+    max_depth = get_tree_depth(root)
+    nodes = deque([(root, 1)])
+    prev_level = 0
+    spacing = " " * 4  
+
+    while nodes:
+        node, level = nodes.popleft()
+
+        if level != prev_level:
+            if prev_level != 0:
+                print()  
+            prev_level = level
+
+        spaces_between = " " * (2 ** (max_depth - level + 1))  
+
+        if node:
+            print(f"{spaces_between}({node.value}){spaces_between}", end="")
+            nodes.append((node.left, level + 1))
+            nodes.append((node.right, level + 1))
+        else:
+            print(f"{spaces_between}   {spaces_between}", end="")
+            nodes.append((None, level + 1))
+            nodes.append((None, level + 1))
+
+        if level >= max_depth and all(n[0] is None for n in nodes):
+            break
+
+if __name__ == "__main__":
+    root = BinaryTree(1)
+    root.left = BinaryTree(2)
+    root.right = BinaryTree(3)
+    root.left.left = BinaryTree(4)
+    root.left.right = BinaryTree(5)
+    root.right.left = BinaryTree(6)
+    root.right.right = BinaryTree(7)
+
+    print("Початкове дерево:\n")
+    print_tree_horizontal(root)
+
+    invert_binary_tree(root)
+
+    print("\n\nІнвертоване дерево:\n")
+    print_tree_horizontal(root)

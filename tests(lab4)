@@ -1,0 +1,40 @@
+import unittest
+from task import BinaryTreePriorityQueue
+
+class TestBinaryTreePriorityQueue(unittest.TestCase):
+
+    def setUp(self):
+        self.queue = BinaryTreePriorityQueue()
+
+    def test_insert_and_peek(self):
+        self.queue.insert("A", 2)
+        self.queue.insert("B", 5)
+        self.queue.insert("C", 1)
+        self.queue.insert("D", 4)
+
+        expected = [('C', 1), ('A', 2), ('D', 4), ('B', 5)]
+        self.assertEqual(self.queue.peek(), expected)
+
+    def test_extract_max(self):
+        self.queue.insert("A", 2)
+        self.queue.insert("B", 5)
+        self.queue.insert("C", 1)
+        self.queue.insert("D", 4)
+
+        removed = self.queue.extract_max()
+        self.assertEqual(removed, ('B', 5))
+
+        expected_after_removal = [('C', 1), ('A', 2), ('D', 4)]
+        self.assertEqual(self.queue.peek(), expected_after_removal)
+
+    def test_order_after_multiple_insertions(self):
+        self.queue.insert("B", 1)
+        self.queue.insert("D", 2)
+        self.queue.insert("A", 3)
+        self.queue.insert("C", 4)
+
+        expected_order = [('B', 1), ('D', 2), ('A', 3), ('C', 4)]
+        self.assertEqual(self.queue.peek(), expected_order)
+
+if __name__ == "__main__":
+    unittest.main()

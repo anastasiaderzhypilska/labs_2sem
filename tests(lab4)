@@ -1,51 +1,5 @@
 import unittest
-
-class Node:
-    def __init__(self, value, priority):
-        self.value = value
-        self.priority = priority
-        self.left = None
-        self.right = None
-
-class BinaryTreePriorityQueue:
-    def __init__(self):
-        self.root = None
-
-    def insert(self, value, priority):
-        new_node = Node(value, priority)
-        self.root = self._merge(self.root, new_node)
-
-    def _merge(self, node1, node2):
-        if not node1:
-            return node2
-        if not node2:
-            return node1
-        
-        if node1.priority < node2.priority:
-            node1, node2 = node2, node1  
-        
-        node1.right = self._merge(node1.right, node2) 
-        node1.left, node1.right = node1.right, node1.left  
-        return node1
-
-    def extract_max(self):
-        if not self.root:
-            raise IndexError("Queue is empty")
-        
-        max_value = (self.root.value, self.root.priority)
-        self.root = self._merge(self.root.left, self.root.right)
-        return max_value
-
-    def peek(self):
-        result = []
-        self._inorder_traversal(self.root, result)
-        return sorted(result, key=lambda x: x[1], reverse=True)  
-
-    def _inorder_traversal(self, node, result):
-        if node:
-            self._inorder_traversal(node.left, result)
-            result.append((node.value, node.priority))
-            self._inorder_traversal(node.right, result)
+from task import BinaryTreePriorityQueue  
 
 class TestBinaryTreePriorityQueue(unittest.TestCase):
     def setUp(self):
@@ -57,19 +11,19 @@ class TestBinaryTreePriorityQueue(unittest.TestCase):
         self.pq.insert("A", 2)
 
     def test_peek_order(self):
-        expected = [('E', 6), ('B', 5), ('D', 4), ('A', 2), ('C', 1)]
+        expected = [("E", 6), ("B", 5), ("D", 4), ("A", 2), ("C", 1)]
         self.assertEqual(self.pq.peek(), expected)
 
     def test_extract_max(self):
         max_element = self.pq.extract_max()
-        self.assertEqual(max_element, ('E', 6))
-        expected_after_removal = [('B', 5), ('D', 4), ('A', 2), ('C', 1)]
+        self.assertEqual(max_element, ("E", 6))
+        expected_after_removal = [("B", 5), ("D", 4), ("A", 2), ("C", 1)]
         self.assertEqual(self.pq.peek(), expected_after_removal)
 
     def test_multiple_extracts(self):
         self.pq.extract_max()
         self.pq.extract_max()
-        expected_after_two_removals = [('D', 4), ('A', 2), ('C', 1)]
+        expected_after_two_removals = [("D", 4), ("A", 2), ("C", 1)]
         self.assertEqual(self.pq.peek(), expected_after_two_removals)
 
     def test_empty_extract(self):
@@ -77,6 +31,11 @@ class TestBinaryTreePriorityQueue(unittest.TestCase):
             self.pq.extract_max()
         with self.assertRaises(IndexError):
             self.pq.extract_max()
+
+    def test_inorder_traversal(self):
+        inorder_result = self.pq.peek_inorder()
+        values_only = [val for val, _ in inorder_result]
+        self.assertEqual(len(values_only), 5)  
 
 if __name__ == "__main__":
     unittest.main()

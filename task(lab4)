@@ -45,6 +45,11 @@ class BinaryTreePriorityQueue:
             result.append((node.value, node.priority))
             self._inorder_traversal(node.right, result)
 
+    def peek_inorder(self):
+        result = []
+        self._inorder_traversal(self.root, result)
+        return result  
+
 if __name__ == "__main__":
     pq = BinaryTreePriorityQueue()
     pq.insert("E", 6)
@@ -53,10 +58,14 @@ if __name__ == "__main__":
     pq.insert("D", 4)
     pq.insert("A", 2)
 
-    print("Черга:", pq.peek())  
+    print("Черга (відсортовано за пріоритетом):", pq.peek()) 
+    print("In-order обхід дерева:", pq.peek_inorder())  
 
     removed = pq.extract_max()
-    print("Вилучений:", removed)  
+    print("Вилучений елемент:", removed)
+    print("Черга після вилучення (відсортовано за пріоритетом):", pq.peek())
+    print("In-order обхід після вилучення:", pq.peek_inorder())  
 
-    print("Черга після вилучення:", pq.peek())
+
+
 

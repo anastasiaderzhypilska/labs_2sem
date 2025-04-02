@@ -11,31 +11,25 @@ class BinaryTreePriorityQueue:
 
     def insert(self, value, priority):
         new_node = Node(value, priority)
-        if not self.root:
-            self.root = new_node
-        else:
-            self.root = self._merge(self.root, new_node)
+        self.root = self._merge(self.root, new_node)
 
     def _merge(self, node1, node2):
         if not node1:
             return node2
         if not node2:
             return node1
-
+        
         if node1.priority < node2.priority:
             node1, node2 = node2, node1  
-
-        if not node1.left:
-            node1.left = node2
-        else:
-            node1.right = self._merge(node1.right, node2)
-
+        
+        node1.right = self._merge(node1.right, node2) 
+        node1.left, node1.right = node1.right, node1.left  
         return node1
 
     def extract_max(self):
         if not self.root:
-            raise IndexError()
-
+            raise IndexError("Queue is empty")
+        
         max_value = (self.root.value, self.root.priority)
         self.root = self._merge(self.root.left, self.root.right)
         return max_value
@@ -43,7 +37,7 @@ class BinaryTreePriorityQueue:
     def peek(self):
         result = []
         self._inorder_traversal(self.root, result)
-        return sorted(result, key=lambda x: x[1]) 
+        return sorted(result, key=lambda x: x[1], reverse=True)  
 
     def _inorder_traversal(self, node, result):
         if node:
@@ -53,14 +47,16 @@ class BinaryTreePriorityQueue:
 
 if __name__ == "__main__":
     pq = BinaryTreePriorityQueue()
-    pq.insert("A", 2)
+    pq.insert("E", 6)
     pq.insert("B", 5)
     pq.insert("C", 1)
     pq.insert("D", 4)
+    pq.insert("A", 2)
 
     print("Черга:", pq.peek())  
 
     removed = pq.extract_max()
     print("Вилучений:", removed)  
 
-    print("Черга після вилучення:", pq.peek())  
+    print("Черга після вилучення:", pq.peek())
+

@@ -1,40 +1,83 @@
 import unittest
-from task import BinaryTreePriorityQueue
+
+class Node:
+    def __init__(self, value, priority):
+        self.value = value
+        self.priority = priority
+        self.left = None
+        self.right = None
+
+class BinaryTreePriorityQueue:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, value, priority):
+        new_node = Node(value, priority)
+        self.root = self._merge(self.root, new_node)
+
+    def _merge(self, node1, node2):
+        if not node1:
+            return node2
+        if not node2:
+            return node1
+        
+        if node1.priority < node2.priority:
+            node1, node2 = node2, node1  
+        
+        node1.right = self._merge(node1.right, node2) 
+        node1.left, node1.right = node1.right, node1.left  
+        return node1
+
+    def extract_max(self):
+        if not self.root:
+            raise IndexError("Queue is empty")
+        
+        max_value = (self.root.value, self.root.priority)
+        self.root = self._merge(self.root.left, self.root.right)
+        return max_value
+
+    def peek(self):
+        result = []
+        self._inorder_traversal(self.root, result)
+        return sorted(result, key=lambda x: x[1], reverse=True)  
+
+    def _inorder_traversal(self, node, result):
+        if node:
+            self._inorder_traversal(node.left, result)
+            result.append((node.value, node.priority))
+            self._inorder_traversal(node.right, result)
 
 class TestBinaryTreePriorityQueue(unittest.TestCase):
-
     def setUp(self):
-        self.queue = BinaryTreePriorityQueue()
+        self.pq = BinaryTreePriorityQueue()
+        self.pq.insert("E", 6)
+        self.pq.insert("B", 5)
+        self.pq.insert("C", 1)
+        self.pq.insert("D", 4)
+        self.pq.insert("A", 2)
 
-    def test_insert_and_peek(self):
-        self.queue.insert("A", 2)
-        self.queue.insert("B", 5)
-        self.queue.insert("C", 1)
-        self.queue.insert("D", 4)
-
-        expected = [('C', 1), ('A', 2), ('D', 4), ('B', 5)]
-        self.assertEqual(self.queue.peek(), expected)
+    def test_peek_order(self):
+        expected = [('E', 6), ('B', 5), ('D', 4), ('A', 2), ('C', 1)]
+        self.assertEqual(self.pq.peek(), expected)
 
     def test_extract_max(self):
-        self.queue.insert("A", 2)
-        self.queue.insert("B", 5)
-        self.queue.insert("C", 1)
-        self.queue.insert("D", 4)
+        max_element = self.pq.extract_max()
+        self.assertEqual(max_element, ('E', 6))
+        expected_after_removal = [('B', 5), ('D', 4), ('A', 2), ('C', 1)]
+        self.assertEqual(self.pq.peek(), expected_after_removal)
 
-        removed = self.queue.extract_max()
-        self.assertEqual(removed, ('B', 5))
+    def test_multiple_extracts(self):
+        self.pq.extract_max()
+        self.pq.extract_max()
+        expected_after_two_removals = [('D', 4), ('A', 2), ('C', 1)]
+        self.assertEqual(self.pq.peek(), expected_after_two_removals)
 
-        expected_after_removal = [('C', 1), ('A', 2), ('D', 4)]
-        self.assertEqual(self.queue.peek(), expected_after_removal)
-
-    def test_order_after_multiple_insertions(self):
-        self.queue.insert("B", 1)
-        self.queue.insert("D", 2)
-        self.queue.insert("A", 3)
-        self.queue.insert("C", 4)
-
-        expected_order = [('B', 1), ('D', 2), ('A', 3), ('C', 4)]
-        self.assertEqual(self.queue.peek(), expected_order)
+    def test_empty_extract(self):
+        for _ in range(5):
+            self.pq.extract_max()
+        with self.assertRaises(IndexError):
+            self.pq.extract_max()
 
 if __name__ == "__main__":
     unittest.main()
+

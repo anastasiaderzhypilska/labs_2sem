@@ -1,0 +1,79 @@
+from collections import deque
+
+class Node:
+    def __init__(self, value, priority):
+        self.value = value
+        self.priority = priority
+        self.left = None
+        self.right = None
+
+class BinaryTreePriorityQueue:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, value, priority):
+        new_node = Node(value, priority)
+        self.root = self._merge(self.root, new_node)
+
+    def _merge(self, node1, node2):
+        if not node1:
+            return node2
+        if not node2:
+            return node1
+        
+        if node1.priority < node2.priority:
+            node1, node2 = node2, node1  
+        
+        node1.right = self._merge(node1.right, node2) 
+        node1.left, node1.right = node1.right, node1.left  
+        return node1
+
+    def extract_max(self):
+        if not self.root:
+            raise IndexError("Queue is empty")
+        
+        max_value = (self.root.value, self.root.priority)
+        self.root = self._merge(self.root.left, self.root.right)
+        return max_value
+
+    def print_tree(self):
+        if not self.root:
+            print("Дерево порожнє")
+            return
+        
+        queue = deque([(self.root, 0)])
+        current_level = 0
+        level_nodes = []
+        
+        while queue:
+            node, level = queue.popleft()
+            if level != current_level:
+                print(" ".join(level_nodes))
+                level_nodes = []
+                current_level = level
+            level_nodes.append(f"({node.value}, {node.priority})")
+            
+            if node.left:
+                queue.append((node.left, level + 1))
+            if node.right:
+                queue.append((node.right, level + 1))
+        
+        if level_nodes:
+            print(" ".join(level_nodes))
+
+if __name__ == "__main__":
+    pq = BinaryTreePriorityQueue()
+    pq.insert("E", 6)
+    pq.insert("B", 5)
+    pq.insert("C", 1)
+    pq.insert("D", 4)
+    pq.insert("A", 2)
+    
+    print("\nДерево перед видаленням:")
+    pq.print_tree()
+    
+    removed = pq.extract_max()
+    print("\nВилучений елемент:", removed)
+    
+    print("\nДерево після видалення:")
+    pq.print_tree()

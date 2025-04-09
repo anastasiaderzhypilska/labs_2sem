@@ -9,17 +9,21 @@ def read_graph_from_file(filename):
     return graph
 
 
-def dfs(start, graph, visited):
-    visited.add(start)
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            dfs(neighbor, graph, visited)
+def dfs_iterative(start, graph, visited):
+    stack = [start]
+    while stack:
+        vertex = stack.pop()
+        if vertex not in visited:
+            visited.add(vertex)
+            for neighbor in reversed(graph[vertex]):
+                if neighbor not in visited:
+                    stack.append(neighbor)
 
 
 def find_root_vertex(graph):
     for vertex in graph:
         visited = set()
-        dfs(vertex, graph, visited)
+        dfs_iterative(vertex, graph, visited)
         if len(visited) == len(graph):
             return vertex
     return -1
@@ -34,3 +38,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

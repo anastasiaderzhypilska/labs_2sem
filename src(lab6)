@@ -1,0 +1,59 @@
+def dfs(person, graph, visited, tribe):
+    visited[person] = True
+    tribe.append(person)  
+    for neighbor in graph.get(person, []):  
+        if not visited.get(neighbor, False):  
+            dfs(neighbor, graph, visited, tribe)
+
+def count_cross_tribe_pairs(edges):
+    graph = {}  
+    
+    for u, v in edges:
+        if u not in graph:
+            graph[u] = []
+        if v not in graph:
+            graph[v] = []
+        graph[u].append(v)
+        graph[v].append(u)
+
+    visited = {} 
+    tribes = []  
+
+    for person in graph:
+        if person not in visited:
+            tribe = []  
+            dfs(person, graph, visited, tribe)
+            tribes.append(tribe)
+
+    tribe_stats = []
+    for members in tribes:
+        boys = sum(1 for x in members if x % 2 == 1)  
+        girls = sum(1 for x in members if x % 2 == 0)  
+        tribe_stats.append((boys, girls))
+
+    total_boys = sum(b for b, _ in tribe_stats)
+    total_girls = sum(g for _, g in tribe_stats)
+
+    total_pairs = 0
+    for boys, girls in tribe_stats:
+        other_boys = total_boys - boys
+        other_girls = total_girls - girls
+        total_pairs += boys * other_girls + girls * other_boys
+
+    return total_pairs // 2
+
+if __name__ == "__main__":
+    try:
+        print(" Введіть кількість пар:")
+        n = int(input())  
+        edges = []
+        print(" Введіть пари (по 2 числа на рядок):")
+        for _ in range(n):
+            u, v = map(int, input().strip().split())  
+            edges.append((u, v))
+
+        result = count_cross_tribe_pairs(edges)  
+        print(f" Можливих шлюбних пар між різними племенами: {result}")
+
+    except Exception as e:
+        print("Помилка вводу:", e)  

@@ -1,0 +1,39 @@
+from src import naive_search_last
+
+def search_in_file(filename: str, needles: list):
+    for needle in needles:
+        total_comparisons = 0
+        found_lines = 0
+        line_number = 0
+
+        with open(filename, 'r', encoding='utf-8') as f:
+            for line in f:
+                line_number += 1
+                index, comparisons = naive_search_last(line, needle)
+                total_comparisons += comparisons
+                if index != -1:
+                    found_lines += 1
+                    print(f"Знайдено '{needle}' у рядку {line_number}, кінцевий індекс: {index}")
+
+        print(f"Кількість входжень '{needle}': {found_lines}")
+        print(f"Загальна кількість порівнянь символів при пошуку '{needle}': {total_comparisons}")
+        print("------------------------------------------------")
+
+def search_from_input():
+    haystack = input("Введіть текст (haystack): ")
+    needle = input("Введіть підстрічку для пошуку (needle): ")
+    index, comparisons = naive_search_last(haystack, needle)
+
+    if index != -1:
+        print(f"Останнє входження знайдено. Кінцевий індекс: {index}")
+    else:
+        print("Підстрічку не знайдено.")
+    print(f"Кількість порівнянь символів: {comparisons}")
+
+if __name__ == "__main__":
+    filename = "log.file"
+    needles = ["error", "fail"]
+    search_in_file(filename, needles)
+
+
+    search_from_input()

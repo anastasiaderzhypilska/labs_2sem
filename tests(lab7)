@@ -1,0 +1,52 @@
+import unittest
+from src import naive_search_last
+
+
+class TestNaiveSearchLast(unittest.TestCase):
+    def test_found_once(self):
+        haystack = "hello world"
+        needle = "world"
+        result = naive_search_last(haystack, needle)
+        self.assertEqual(result[0], 10)
+
+    def test_found_multiple(self):
+        haystack = "ababcabcab"
+        needle = "abc"
+        result = naive_search_last(haystack, needle)
+        self.assertEqual(result[0], 7)
+
+    def test_not_found(self):
+        haystack = "abcdef"
+        needle = "gh"
+        result = naive_search_last(haystack, needle)
+        self.assertEqual(result[0], -1)
+
+    def test_empty_needle(self):
+        haystack = "abcdef"
+        needle = ""
+        result = naive_search_last(haystack, needle)
+        # Тепер перевіряємо, що останній індекс — це len(haystack) - 1, а порівнянь 0.
+        self.assertEqual(result[0], 5)  # Останній індекс haystack
+        self.assertEqual(result[1], 0)  # Порівнянь не було
+
+    def test_empty_haystack(self):
+        haystack = ""
+        needle = "a"
+        result = naive_search_last(haystack, needle)
+        self.assertEqual(result[0], -1)
+
+    def test_both_empty(self):
+        haystack = ""
+        needle = ""
+        result = naive_search_last(haystack, needle)
+        self.assertEqual(result[0], -1)
+
+    def test_comparisons_count(self):
+        haystack = "aaaabaaaabaa"
+        needle = "abaa"
+        result = naive_search_last(haystack, needle)
+        self.assertTrue(result[1] > 0)
+
+
+if __name__ == "__main__":
+    unittest.main()

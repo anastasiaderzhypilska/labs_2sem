@@ -1,0 +1,26 @@
+import unittest
+from src import build_graph, edmonds_karp
+
+
+class TestMaxFlow(unittest.TestCase):
+    def test_example_flow(self):
+        farms = ["F1", "F2", "F3"]
+        shops = ["S1", "S2", "S3", "S4", "S5"]
+        edges = [
+            ("F1", "X1", 10),
+            ("F2", "X1", 5),
+            ("F3", "X2", 8),
+            ("X1", "X2", 3),
+            ("X2", "S1", 4),
+            ("X2", "S2", 6),
+            ("X1", "S3", 2),
+            ("X2", "S4", 5),
+            ("X1", "S5", 4),
+        ]
+        graph, source, sink = build_graph(farms, shops, edges)
+        result = edmonds_karp(graph, source, sink)
+        self.assertEqual(result, 17)
+
+
+if __name__ == "__main__":
+    unittest.main()
